@@ -12,6 +12,8 @@ func InitRouter() *gin.Engine {
 
 	// Create controllers
 	authController := controller.NewAuthController()
+	userController := controller.NewUserController()
+	vaultController := controller.NewVaultController()
 
 	api := router.Group("/api")
 	{
@@ -24,11 +26,12 @@ func InitRouter() *gin.Engine {
 		loggedInGroup := api.Group("/")
 		loggedInGroup.Use(util.AuthenticationRequired())
 		{
-			loggedInGroup.GET("/ping", func(c *gin.Context) {
-				c.JSON(200, gin.H{
-					"message": "pong",
-				})
-			})
+			// User
+			loggedInGroup.GET("/user", userController.FetchUser)
+
+			// Vaults
+			loggedInGroup.POST("/vaults", vaultController.SaveVaults)
+			loggedInGroup.GET("/vaults", vaultController.GetVaults)
 		}
 	}
 
