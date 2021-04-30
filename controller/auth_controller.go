@@ -141,7 +141,7 @@ func (a *AuthController) Login(c *gin.Context) {
 	}
 
 	// Check if the code is exists and not expired
-	loginToken, err := a.loginTokenService.FetchTokenNotExpiredByUserId(user.ID, loginUserForm.Token)
+	_, err = a.loginTokenService.FetchTokenNotExpiredByUserId(user.ID, loginUserForm.Token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -150,8 +150,8 @@ func (a *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	// Delete the login token as it had been used already
-	a.loginTokenService.Delete(loginToken)
+	// Delete all the login tokens
+	a.loginTokenService.DeleteAllForUser(user.ID)
 
 	// Create the tokens
 	accessToken, err := createAccessToken(user)

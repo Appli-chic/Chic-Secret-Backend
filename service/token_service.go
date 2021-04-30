@@ -15,9 +15,9 @@ func (t *TokenService) Save(token model.Token) (model.Token, error) {
 	return token, err
 }
 
-// Fetch a token the user's email
+// FetchTokenByUserId Fetch a token the user's email
 func (t *TokenService) FetchTokenByUserId(userId interface{}) (model.Token, error) {
 	token := model.Token{}
-	err := config.DB.Where("user_id = ?", userId).First(&token).Error
+	err := config.DB.Where("user_id = ? AND is_valid = ?", userId, true).First(&token).Error
 	return token, err
 }

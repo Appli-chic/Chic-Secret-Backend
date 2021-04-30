@@ -16,8 +16,8 @@ func (l *LoginTokenService) Save(loginToken model.LoginToken) (model.LoginToken,
 	return loginToken, err
 }
 
-func (l *LoginTokenService) Delete(loginToken model.LoginToken) error {
-	err := config.DB.Unscoped().Delete(&loginToken).Error
+func (l *LoginTokenService) DeleteAllForUser(userId uuid.UUID) error {
+	err := config.DB.Unscoped().Delete(&model.LoginToken{}).Where("id = ", userId).Error
 	return err
 }
 
