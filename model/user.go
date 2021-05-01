@@ -12,7 +12,7 @@ type User struct {
 	Email       string       `gorm:"type:varchar(255);unique_index"`
 	Tokens      []Token      `gorm:"foreignKey:UserID"`
 	LoginTokens []LoginToken `gorm:"foreignKey:UserID"`
-	Vault       Vault        `gorm:"foreignKey:UserID"`
+	Vaults      []Vault      `gorm:"foreignKey:UserID"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   *time.Time `sql:"index"`

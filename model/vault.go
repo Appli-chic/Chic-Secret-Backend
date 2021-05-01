@@ -13,6 +13,7 @@ type Vault struct {
 	UserID     uuid.UUID  `gorm:"type:uuid;not null"`
 	Categories []Category `gorm:"foreignKey:VaultID"`
 	Entries    []Entry    `gorm:"foreignKey:VaultID"`
+	Tags       []Tag      `gorm:"foreignKey:VaultID"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  *time.Time `sql:"index"`

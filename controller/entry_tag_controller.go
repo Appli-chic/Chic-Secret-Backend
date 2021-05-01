@@ -12,26 +12,26 @@ import (
 	"time"
 )
 
-type CustomFieldController struct {
-	customFieldService *service.CustomFieldService
+type EntryTagController struct {
+	entryTagService *service.EntryTagService
 }
 
-func NewCustomFieldController() *CustomFieldController {
-	customFieldController := new(CustomFieldController)
-	customFieldController.customFieldService = new(service.CustomFieldService)
-	return customFieldController
+func NewEntryTagController() *EntryTagController {
+	entryTagFieldController := new(EntryTagController)
+	entryTagFieldController.entryTagService = new(service.EntryTagService)
+	return entryTagFieldController
 }
 
-func (customFieldController *CustomFieldController) SaveCustomFields(c *gin.Context) {
-	customFieldForm := validator2.SaveCustomFieldForm{}
-	if err := c.ShouldBindJSON(&customFieldForm); err != nil {
+func (entryTagController *EntryTagController) SaveEntryTags(c *gin.Context) {
+	entryTagForm := validator2.SaveEntryTagForm{}
+	if err := c.ShouldBindJSON(&entryTagForm); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	// Validate the form
 	validate := validator.New()
-	err := validate.Struct(customFieldForm)
+	err := validate.Struct(entryTagForm)
 
 	// Check if the form is valid
 	if err != nil {
@@ -39,20 +39,20 @@ func (customFieldController *CustomFieldController) SaveCustomFields(c *gin.Cont
 		return
 	}
 
-	// Save the customFieldForm
-	for _, customField := range customFieldForm.CustomFields {
-		saveError := customFieldController.customFieldService.Save(&customField)
+	// Save the entry tags
+	for _, entryTag := range entryTagForm.EntryTags {
+		saveError := entryTagController.entryTagService.Save(&entryTag)
 
 		if saveError != nil {
-			_ = fmt.Sprintf("CustomFieldController->SaveCustomFields: %s", saveError.Error())
+			_ = fmt.Sprintf("EntryTagController->SaveEntryTags: %s", saveError.Error())
 		}
 	}
 
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
-func (customFieldController *CustomFieldController) GetCustomFields(c *gin.Context) {
-	var customFields []model.CustomField
+func (entryTagController *EntryTagController) GetEntryTags(c *gin.Context) {
+	var entryTags []model.EntryTag
 	layout := "2006-01-02T15:04:05Z"
 	lastSynchroString := c.Query("LastSynchro")
 
@@ -67,7 +67,7 @@ func (customFieldController *CustomFieldController) GetCustomFields(c *gin.Conte
 	}
 
 	if lastSynchroString != "" && lastSynchroString != "null" {
-		// Retrieve the categories that changed
+		// Retrieve the tags that changed
 		lastSynchro, err := time.Parse(layout, lastSynchroString)
 
 		if err != nil {
@@ -75,14 +75,14 @@ func (customFieldController *CustomFieldController) GetCustomFields(c *gin.Conte
 			return
 		}
 
-		customFields, err = customFieldController.customFieldService.GetCustomFieldsToSynchronize(user.ID, lastSynchro)
+		entryTags, err = entryTagController.entryTagService.GetEntryTagsToSynchronize(user.ID, lastSynchro)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	} else {
 		// Retrieve all the custom fields
-		customFields, err = customFieldController.customFieldService.GetCustomFieldsFromVault(user.ID)
+		entryTags, err = entryTagController.entryTagService.GetEntryTagsFromVault(user.ID)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -90,6 +90,6 @@ func (customFieldController *CustomFieldController) GetCustomFields(c *gin.Conte
 	}
 
 	c.JSONP(http.StatusOK, gin.H{
-		"custom_fields": customFields,
+		"entry_tags": entryTags,
 	})
 }

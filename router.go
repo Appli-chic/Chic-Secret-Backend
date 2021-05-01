@@ -17,6 +17,8 @@ func InitRouter() *gin.Engine {
 	categoryController := controller.NewCategoryController()
 	entryController := controller.NewEntryController()
 	customFieldController := controller.NewCustomFieldController()
+	tagController := controller.NewTagController()
+	entryTagController := controller.NewEntryTagController()
 
 	api := router.Group("/api")
 	{
@@ -47,6 +49,14 @@ func InitRouter() *gin.Engine {
 			// Custom Fields
 			loggedInGroup.POST("/custom-fields", customFieldController.SaveCustomFields)
 			loggedInGroup.GET("/custom-fields", customFieldController.GetCustomFields)
+
+			// Tags
+			loggedInGroup.POST("/tags", tagController.SaveTags)
+			loggedInGroup.GET("/tags", tagController.GetTags)
+
+			// Entry tags
+			loggedInGroup.POST("/entry-tags", entryTagController.SaveEntryTags)
+			loggedInGroup.GET("/entry-tags", entryTagController.GetEntryTags)
 		}
 	}
 

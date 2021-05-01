@@ -13,7 +13,7 @@ type Category struct {
 	Color     string    `gorm:"type:varchar(255);not null"`
 	IsTrash   bool      `gorm:"not null"`
 	VaultID   uuid.UUID `gorm:"type:uuid;not null"`
-	Entry     Entry     `gorm:"foreignKey:CategoryID"`
+	Entries   []Entry   `gorm:"foreignKey:CategoryID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time `sql:"index"`
