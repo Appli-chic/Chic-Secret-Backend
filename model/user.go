@@ -1,23 +1,27 @@
 package model
 
 import (
+	"gorm.io/gorm"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 )
 
 type User struct {
 	ID          uuid.UUID    `gorm:"type:uuid;primary_key;"`
 	Email       string       `gorm:"type:varchar(255);unique_index"`
-	Tokens      []Token      `gorm:"foreignkey:UserID"`
-	LoginTokens []LoginToken `gorm:"foreignkey:UserID"`
+	Tokens      []Token      `gorm:"foreignKey:UserID"`
+	LoginTokens []LoginToken `gorm:"foreignKey:UserID"`
+	Vault       Vault        `gorm:"foreignKey:UserID"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   *time.Time `sql:"index"`
 }
 
-func (user *User) BeforeCreate(scope *gorm.Scope) error {
-	uuid := uuid.NewV4()
-	return scope.SetColumn("ID", uuid)
+func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
+	if user.ID == uuid.Nil {
+		user.ID = uuid.NewV4()
+	}
+
+	return
 }

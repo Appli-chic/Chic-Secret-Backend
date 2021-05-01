@@ -8,21 +8,21 @@ import (
 type UserService struct {
 }
 
-// Fetch a user from it's ID
+// FetchUserById Fetch a user from it's ID
 func (u *UserService) FetchUserById(userId interface{}) (model.User, error) {
 	user := model.User{}
 	err := config.DB.Select("id, email").Where("id = ?", userId).First(&user).Error
 	return user, err
 }
 
-// Fetch a user from it's email
+// FetchUserByEmail Fetch a user from it's email
 func (u *UserService) FetchUserByEmail(email string) (model.User, error) {
 	user := model.User{}
 	err := config.DB.Where("email = ?", email).First(&user).Error
 	return user, err
 }
 
-// Fetch a user from the refresh token linked to this account
+// FetchUserFromRefreshToken Fetch a user from the refresh token linked to this account
 func (u *UserService) FetchUserFromRefreshToken(refreshToken string) (model.User, error) {
 	user := model.User{}
 	err := config.DB.
@@ -34,7 +34,6 @@ func (u *UserService) FetchUserFromRefreshToken(refreshToken string) (model.User
 
 // Save a user
 func (u *UserService) Save(user *model.User) error {
-	config.DB.NewRecord(user)
 	err := config.DB.Create(&user).Error
 	return err
 }

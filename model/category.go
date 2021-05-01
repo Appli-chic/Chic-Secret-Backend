@@ -1,8 +1,8 @@
 package model
 
 import (
-	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -13,16 +13,16 @@ type Category struct {
 	Color     string    `gorm:"type:varchar(255);not null"`
 	IsTrash   bool      `gorm:"not null"`
 	VaultID   uuid.UUID `gorm:"type:uuid;not null"`
+	Entry     Entry     `gorm:"foreignKey:CategoryID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time `sql:"index"`
 }
 
-func (category *Category) BeforeCreate(scope *gorm.Scope) error {
+func (category *Category) BeforeCreate(tx *gorm.DB) (err error) {
 	if category.ID == uuid.Nil {
-		uuid := uuid.NewV4()
-		return scope.SetColumn("ID", uuid)
+		category.ID = uuid.NewV4()
 	}
 
-	return nil
+	return
 }

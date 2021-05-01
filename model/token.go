@@ -1,9 +1,9 @@
 package model
 
 import (
+	"gorm.io/gorm"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -17,7 +17,10 @@ type Token struct {
 	DeletedAt *time.Time `sql:"index"`
 }
 
-func (token *Token) BeforeCreate(scope *gorm.Scope) error {
-	uuid := uuid.NewV4()
-	return scope.SetColumn("ID", uuid)
+func (token *Token) BeforeCreate(tx *gorm.DB) (err error) {
+	if token.ID == uuid.Nil {
+		token.ID = uuid.NewV4()
+	}
+
+	return
 }

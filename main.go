@@ -12,7 +12,6 @@ func main() {
 
 	// Init database
 	db, err := config2.InitDB()
-	defer db.Close()
 
 	if err != nil {
 		panic(err)
@@ -29,7 +28,11 @@ func main() {
 	router.Use(cors.New(config))
 
 	err = router.Run(":3000")
+	if err != nil {
+		panic(err)
+	}
 
+	err = db.Close()
 	if err != nil {
 		panic(err)
 	}

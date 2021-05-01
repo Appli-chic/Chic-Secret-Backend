@@ -10,7 +10,6 @@ type TokenService struct {
 
 // Save the token
 func (t *TokenService) Save(token model.Token) (model.Token, error) {
-	config.DB.NewRecord(token)
 	err := config.DB.Create(&token).Error
 	return token, err
 }

@@ -11,13 +11,12 @@ type LoginTokenService struct {
 }
 
 func (l *LoginTokenService) Save(loginToken model.LoginToken) (model.LoginToken, error) {
-	config.DB.NewRecord(loginToken)
 	err := config.DB.Create(&loginToken).Error
 	return loginToken, err
 }
 
 func (l *LoginTokenService) DeleteAllForUser(userId uuid.UUID) error {
-	err := config.DB.Unscoped().Delete(&model.LoginToken{}).Where("id = ", userId).Error
+	err := config.DB.Where("id = ", userId).Delete(&model.LoginToken{}).Error
 	return err
 }
 

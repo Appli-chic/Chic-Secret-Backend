@@ -8,7 +8,6 @@ import (
 )
 
 type Config struct {
-	DatabaseDialect             string
 	DatabaseHost                string
 	DatabasePort                string
 	DatabaseUser                string
@@ -46,7 +45,6 @@ func LoadConfiguration() {
 	}
 
 	Conf = Config{
-		DatabaseDialect:             os.Getenv("DATABASE_DIALECT"),
 		DatabaseHost:                os.Getenv("DATABASE_HOST"),
 		DatabasePort:                os.Getenv("DATABASE_PORT"),
 		DatabaseUser:                os.Getenv("DATABASE_USER"),

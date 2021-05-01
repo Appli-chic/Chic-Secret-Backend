@@ -15,6 +15,7 @@ func InitRouter() *gin.Engine {
 	userController := controller.NewUserController()
 	vaultController := controller.NewVaultController()
 	categoryController := controller.NewCategoryController()
+	entryController := controller.NewEntryController()
 
 	api := router.Group("/api")
 	{
@@ -37,6 +38,10 @@ func InitRouter() *gin.Engine {
 			// Categories
 			loggedInGroup.POST("/categories", categoryController.SaveCategories)
 			loggedInGroup.GET("/categories", categoryController.GetCategories)
+
+			// Entries
+			loggedInGroup.POST("/entries", entryController.SaveEntries)
+			loggedInGroup.GET("/entries", entryController.GetEntries)
 		}
 	}
 
