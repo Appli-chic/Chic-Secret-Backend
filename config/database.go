@@ -29,7 +29,8 @@ func InitDB() (*sql.DB, error) {
 	// Set the database and migrate the models
 	sqlDB.SetMaxIdleConns(Conf.DatabaseMaxConnection)
 	DB = db
-	db.AutoMigrate(&model.User{}, &model.Token{}, &model.LoginToken{}, &model.Vault{}, &model.Category{}, &model.Entry{})
+	db.AutoMigrate(&model.User{}, &model.Token{}, &model.LoginToken{}, &model.Vault{}, &model.Category{},
+		&model.Entry{}, &model.CustomField{})
 
 	return sqlDB, nil
 }
