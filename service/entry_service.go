@@ -16,6 +16,16 @@ func (e *EntryService) Save(entry *model.Entry) error {
 	return err
 }
 
+// GetEntry Get an entry
+func (e *EntryService) GetEntry(entryId uuid.UUID) (model.Entry, error) {
+	var entry model.Entry
+	err := config.DB.
+		Where("id = ?", entryId).
+		Find(&entry).Error
+
+	return entry, err
+}
+
 // GetEntriesToSynchronize Get the modified entries linked to the vault
 func (e *EntryService) GetEntriesToSynchronize(userId uuid.UUID, lastSync time.Time) ([]model.Entry, error) {
 	var entries []model.Entry

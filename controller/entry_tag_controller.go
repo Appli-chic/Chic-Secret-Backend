@@ -41,10 +41,14 @@ func (entryTagController *EntryTagController) SaveEntryTags(c *gin.Context) {
 
 	// Save the entry tags
 	for _, entryTag := range entryTagForm.EntryTags {
-		saveError := entryTagController.entryTagService.Save(&entryTag)
+		currentEntryTag, err := entryTagController.entryTagService.GetEntryTag(entryTag.EntryID, entryTag.TagID)
 
-		if saveError != nil {
-			_ = fmt.Sprintf("EntryTagController->SaveEntryTags: %s", saveError.Error())
+		if err == nil && currentEntryTag.UpdatedAt.Unix() < entryTag.UpdatedAt.Unix() {
+			saveError := entryTagController.entryTagService.Save(&entryTag)
+
+			if saveError != nil {
+				_ = fmt.Sprintf("EntryTagController->SaveEntryTags: %s", saveError.Error())
+			}
 		}
 	}
 

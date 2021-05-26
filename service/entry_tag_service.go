@@ -16,6 +16,16 @@ func (e *EntryTagService) Save(entryTag *model.EntryTag) error {
 	return err
 }
 
+// GetEntryTag Get an entry category
+func (e *EntryTagService) GetEntryTag(entryId uuid.UUID, tagId uuid.UUID) (model.EntryTag, error) {
+	var entryTag model.EntryTag
+	err := config.DB.
+		Where("entry_id = ? AND tag_id = ?", entryId, tagId).
+		Find(&entryTag).Error
+
+	return entryTag, err
+}
+
 // GetEntryTagsToSynchronize Get the modified entry tags linked to the vault
 func (e *EntryTagService) GetEntryTagsToSynchronize(userId uuid.UUID, lastSync time.Time) ([]model.EntryTag, error) {
 	var entryTags []model.EntryTag

@@ -41,10 +41,14 @@ func (e *EntryController) SaveEntries(c *gin.Context) {
 
 	// Save the entriesForm
 	for _, entry := range entriesForm.Entries {
-		saveError := e.entryService.Save(&entry)
+		currentEntry, err := e.entryService.GetEntry(entry.ID)
 
-		if saveError != nil {
-			_ = fmt.Sprintf("EntryController->SaveEntries: %s", saveError.Error())
+		if err == nil && currentEntry.UpdatedAt.Unix() < entry.UpdatedAt.Unix() {
+			saveError := e.entryService.Save(&entry)
+
+			if saveError != nil {
+				_ = fmt.Sprintf("EntryController->SaveEntries: %s", saveError.Error())
+			}
 		}
 	}
 

@@ -16,6 +16,16 @@ func (v *VaultService) Save(vault *model.Vault) error {
 	return err
 }
 
+// GetVault Get a vault
+func (v *VaultService) GetVault(vaultId uuid.UUID) (model.Vault, error) {
+	var vault model.Vault
+	err := config.DB.
+		Where("id = ?", vaultId).
+		Find(&vault).Error
+
+	return vault, err
+}
+
 // GetVaultsToSynchronize Get the modified vaults
 func (v *VaultService) GetVaultsToSynchronize(userId uuid.UUID, lastSync time.Time) ([]model.Vault, error) {
 	var vaults []model.Vault

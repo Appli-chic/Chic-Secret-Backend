@@ -16,6 +16,16 @@ func (t *TagService) Save(tag *model.Tag) error {
 	return err
 }
 
+// GetTag Get a tag
+func (t *TagService) GetTag(tagId uuid.UUID) (model.Tag, error) {
+	var tag model.Tag
+	err := config.DB.
+		Where("id = ?", tagId).
+		Find(&tag).Error
+
+	return tag, err
+}
+
 // GetTagsToSynchronize Get the modified tags linked to the vault
 func (t *TagService) GetTagsToSynchronize(userId uuid.UUID, lastSync time.Time) ([]model.Tag, error) {
 	var tags []model.Tag

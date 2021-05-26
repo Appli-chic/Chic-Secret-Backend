@@ -16,6 +16,16 @@ func (c *CustomFieldService) Save(customField *model.CustomField) error {
 	return err
 }
 
+// GetCustomField Get a custom field
+func (c *CustomFieldService) GetCustomField(CustomFieldId uuid.UUID) (model.CustomField, error) {
+	var customField model.CustomField
+	err := config.DB.
+		Where("id = ?", CustomFieldId).
+		Find(&customField).Error
+
+	return customField, err
+}
+
 // GetCustomFieldsToSynchronize Get the modified custom fields linked to the vault
 func (c *CustomFieldService) GetCustomFieldsToSynchronize(userId uuid.UUID, lastSync time.Time) ([]model.CustomField, error) {
 	var customFields []model.CustomField

@@ -41,10 +41,14 @@ func (tagController *TagController) SaveTags(c *gin.Context) {
 
 	// Save the tags
 	for _, tag := range tagForm.Tags {
-		saveError := tagController.tagService.Save(&tag)
+		currentCategory, err := tagController.tagService.GetTag(tag.ID)
 
-		if saveError != nil {
-			_ = fmt.Sprintf("TagController->SaveTags: %s", saveError.Error())
+		if err == nil && currentCategory.UpdatedAt.Unix() < tag.UpdatedAt.Unix() {
+			saveError := tagController.tagService.Save(&tag)
+
+			if saveError != nil {
+				_ = fmt.Sprintf("TagController->SaveTags: %s", saveError.Error())
+			}
 		}
 	}
 

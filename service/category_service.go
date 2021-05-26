@@ -16,6 +16,16 @@ func (c *CategoryService) Save(category *model.Category) error {
 	return err
 }
 
+// GetCategory Get a category
+func (c *CategoryService) GetCategory(categoryId uuid.UUID) (model.Category, error) {
+	var category model.Category
+	err := config.DB.
+		Where("id = ?", categoryId).
+		Find(&category).Error
+
+	return category, err
+}
+
 // GetCategoriesToSynchronize Get the modified categories linked to the vault
 func (c *CategoryService) GetCategoriesToSynchronize(userId uuid.UUID, lastSync time.Time) ([]model.Category, error) {
 	var categories []model.Category

@@ -41,10 +41,14 @@ func (v *VaultController) SaveVaults(c *gin.Context) {
 
 	// Save the saveVaultsForm
 	for _, vault := range saveVaultsForm.Vaults {
-		saveError := v.vaultService.Save(&vault)
+		currentCategory, err := v.vaultService.GetVault(vault.ID)
 
-		if saveError != nil {
-			_ = fmt.Sprintf("VaultController->SaveVaults: %s", saveError.Error())
+		if err == nil && currentCategory.UpdatedAt.Unix() < vault.UpdatedAt.Unix() {
+			saveError := v.vaultService.Save(&vault)
+
+			if saveError != nil {
+				_ = fmt.Sprintf("VaultController->SaveVaults: %s", saveError.Error())
+			}
 		}
 	}
 

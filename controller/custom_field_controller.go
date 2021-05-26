@@ -41,10 +41,14 @@ func (customFieldController *CustomFieldController) SaveCustomFields(c *gin.Cont
 
 	// Save the customFieldForm
 	for _, customField := range customFieldForm.CustomFields {
-		saveError := customFieldController.customFieldService.Save(&customField)
+		currentCustomField, err := customFieldController.customFieldService.GetCustomField(customField.ID)
 
-		if saveError != nil {
-			_ = fmt.Sprintf("CustomFieldController->SaveCustomFields: %s", saveError.Error())
+		if err == nil && currentCustomField.UpdatedAt.Unix() < customField.UpdatedAt.Unix() {
+			saveError := customFieldController.customFieldService.Save(&customField)
+
+			if saveError != nil {
+				_ = fmt.Sprintf("CustomFieldController->SaveCustomFields: %s", saveError.Error())
+			}
 		}
 	}
 

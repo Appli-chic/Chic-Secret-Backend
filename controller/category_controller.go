@@ -41,10 +41,14 @@ func (categoryController *CategoryController) SaveCategories(c *gin.Context) {
 
 	// Save the categoriesForm
 	for _, category := range categoriesForm.Categories {
-		saveError := categoryController.categoryService.Save(&category)
+		currentCategory, err := categoryController.categoryService.GetCategory(category.ID)
 
-		if saveError != nil {
-			_ = fmt.Sprintf("CategoryController->SaveCategories: %s", saveError.Error())
+		if err == nil && currentCategory.UpdatedAt.Unix() < category.UpdatedAt.Unix() {
+			saveError := categoryController.categoryService.Save(&category)
+
+			if saveError != nil {
+				_ = fmt.Sprintf("CategoryController->SaveCategories: %s", saveError.Error())
+			}
 		}
 	}
 
