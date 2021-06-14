@@ -9,6 +9,7 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/google/uuid v1.2.0
 	github.com/joho/godotenv v1.3.0
+	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/satori/go.uuid v1.2.0
 	gorm.io/driver/postgres v1.0.8
 	gorm.io/gorm v1.21.9
