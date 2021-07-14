@@ -3,7 +3,6 @@ package main
 import (
 	config2 "applichic.com/chic_secret/config"
 	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,7 +28,7 @@ func main() {
 	router.Use(cors.New(config))
 
 	//err = router.Run(":3000")
-	err = autotls.Run(router, "chic-secret.com")
+	err = router.RunTLS(":8443", "/etc/letsencrypt/live/chic-secret.com/fullchain.pem", "/etc/letsencrypt/live/chic-secret.com/privkey.pem")
 	if err != nil {
 		panic(err)
 	}
