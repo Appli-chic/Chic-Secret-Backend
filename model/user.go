@@ -8,16 +8,17 @@ import (
 )
 
 type User struct {
-	ID           uuid.UUID    `gorm:"type:uuid;primary_key;"`
-	Email        string       `gorm:"type:varchar(255);unique_index"`
-	Tokens       []Token      `gorm:"foreignKey:UserID"`
-	LoginTokens  []LoginToken `gorm:"foreignKey:UserID"`
-	Vaults       []Vault      `gorm:"foreignKey:UserID"`
-	IsSubscribed bool
-	Subscription string `gorm:"type:varchar(255)"`
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	DeletedAt    *time.Time `sql:"index"`
+	ID                  uuid.UUID    `gorm:"type:uuid;primary_key;"`
+	Email               string       `gorm:"type:varchar(255);unique_index"`
+	Tokens              []Token      `gorm:"foreignKey:UserID"`
+	LoginTokens         []LoginToken `gorm:"foreignKey:UserID"`
+	Vaults              []Vault      `gorm:"foreignKey:UserID"`
+	IsSubscribed        bool
+	Subscription        string `gorm:"type:varchar(255)"`
+	SubscriptionEndDate time.Time
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	DeletedAt           *time.Time `sql:"index"`
 }
 
 func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
