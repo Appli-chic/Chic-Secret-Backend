@@ -27,8 +27,8 @@ func main() {
 	config.AllowOrigins = []string{"https://chic-secret.com"}
 	router.Use(cors.New(config))
 
-	err = router.Run(":3000")
-	//err = router.RunTLS(":8443", "/etc/letsencrypt/live/chic-secret.com/fullchain.pem", "/etc/letsencrypt/live/chic-secret.com/privkey.pem")
+	//err = router.Run(":3000")
+	err = router.RunTLS(":8443", "/etc/letsencrypt/live/chic-secret.com/fullchain.pem", "/etc/letsencrypt/live/chic-secret.com/privkey.pem")
 	if err != nil {
 		panic(err)
 	}
