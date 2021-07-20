@@ -13,8 +13,8 @@ type User struct {
 	Tokens       []Token      `gorm:"foreignKey:UserID"`
 	LoginTokens  []LoginToken `gorm:"foreignKey:UserID"`
 	Vaults       []Vault      `gorm:"foreignKey:UserID"`
-	IsSubscribed bool         `gorm:"not null"`
-	Subscription string       `gorm:"type:varchar(255);not null"`
+	IsSubscribed bool
+	Subscription string `gorm:"type:varchar(255)"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    *time.Time `sql:"index"`
