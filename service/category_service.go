@@ -31,7 +31,8 @@ func (c *CategoryService) GetCategoriesToSynchronize(userId uuid.UUID, lastSync 
 	var categories []model.Category
 	err := config.DB.
 		Joins("left join vaults on vaults.id = categories.vault_id").
-		Where("vaults.user_id = ? AND categories.updated_at > ?", userId, lastSync).
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND categories.updated_at > ?", userId, userId, lastSync).
 		Find(&categories).Error
 
 	return categories, err
@@ -42,7 +43,8 @@ func (c *CategoryService) GetCategoriesFromVault(userId uuid.UUID) ([]model.Cate
 	var categories []model.Category
 	err := config.DB.
 		Joins("left join vaults on vaults.id = categories.vault_id").
-		Where("vaults.user_id = ?", userId).
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("vaults.user_id = ? or vault_users.user_id = ?", userId, userId).
 		Find(&categories).Error
 
 	return categories, err

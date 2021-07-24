@@ -32,7 +32,8 @@ func (c *CustomFieldService) GetCustomFieldsToSynchronize(userId uuid.UUID, last
 	err := config.DB.
 		Joins("left join entries on entries.id = custom_fields.entry_id").
 		Joins("left join vaults on vaults.id = entries.vault_id").
-		Where("vaults.user_id = ? AND custom_fields.updated_at > ?", userId, lastSync).
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND custom_fields.updated_at > ?", userId, userId, lastSync).
 		Find(&customFields).Error
 
 	return customFields, err
@@ -44,7 +45,8 @@ func (c *CustomFieldService) GetCustomFieldsFromVault(userId uuid.UUID) ([]model
 	err := config.DB.
 		Joins("left join entries on entries.id = custom_fields.entry_id").
 		Joins("left join vaults on vaults.id = entries.vault_id").
-		Where("vaults.user_id = ?", userId).
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("vaults.user_id = ? or vault_users.user_id = ?", userId, userId).
 		Find(&customFields).Error
 
 	return customFields, err

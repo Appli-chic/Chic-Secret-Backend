@@ -32,7 +32,7 @@ func (e *EntryService) GetEntriesToSynchronize(userId uuid.UUID, lastSync time.T
 	err := config.DB.
 		Joins("left join vaults on vaults.id = entries.vault_id").
 		Joins("left join vault_users on vault_users.vault_id = vaults.id").
-		Where("(vaults.user_id = ? or vault_users.user_id = ?) entries.updated_at > ?", userId, userId, lastSync).
+		Where("(vaults.user_id = ? or vault_users.user_id = ?) and entries.updated_at > ?", userId, userId, lastSync).
 		Find(&entries).Error
 
 	return entries, err
