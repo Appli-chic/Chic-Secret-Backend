@@ -29,13 +29,17 @@ func (v *VaultService) GetVault(vaultId uuid.UUID) (model.Vault, error) {
 // GetVaultsToSynchronize Get the modified vaults
 func (v *VaultService) GetVaultsToSynchronize(userId uuid.UUID, lastSync time.Time) ([]model.Vault, error) {
 	var vaults []model.Vault
-	err := config.DB.Where("user_id = ? AND updated_at > ?", userId, lastSync).Find(&vaults).Error
+	err := config.DB.
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND updated_at > ?", userId, userId, lastSync).Find(&vaults).Error
 	return vaults, err
 }
 
 // GetUserVaults Get the all vaults linked to the user
 func (v *VaultService) GetUserVaults(userId uuid.UUID) ([]model.Vault, error) {
 	var vaults []model.Vault
-	err := config.DB.Where("user_id = ?", userId).Find(&vaults).Error
+	err := config.DB.
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("vaults.user_id = ? or vault_users.user_id = ?", userId, userId).Find(&vaults).Error
 	return vaults, err
 }

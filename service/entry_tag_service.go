@@ -32,7 +32,8 @@ func (e *EntryTagService) GetEntryTagsToSynchronize(userId uuid.UUID, lastSync t
 	err := config.DB.
 		Joins("left join entries on entries.id = entry_tags.entry_id").
 		Joins("left join vaults on vaults.id = entries.vault_id").
-		Where("vaults.user_id = ? AND entry_tags.updated_at > ?", userId, lastSync).
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND entry_tags.updated_at > ?", userId, userId, lastSync).
 		Find(&entryTags).Error
 
 	return entryTags, err
@@ -44,7 +45,8 @@ func (e *EntryTagService) GetEntryTagsFromVault(userId uuid.UUID) ([]model.Entry
 	err := config.DB.
 		Joins("left join entries on entries.id = entry_tags.entry_id").
 		Joins("left join vaults on vaults.id = entries.vault_id").
-		Where("vaults.user_id = ? ", userId).
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("vaults.user_id = ? or vault_users.user_id = ?", userId, userId).
 		Find(&entryTags).Error
 
 	return entryTags, err

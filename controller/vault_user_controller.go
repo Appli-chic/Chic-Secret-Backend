@@ -12,26 +12,26 @@ import (
 	"time"
 )
 
-type EntryTagController struct {
-	entryTagService *service.EntryTagService
+type VaultUserController struct {
+	vaultUserService *service.VaultUserService
 }
 
-func NewEntryTagController() *EntryTagController {
-	entryTagFieldController := new(EntryTagController)
-	entryTagFieldController.entryTagService = new(service.EntryTagService)
-	return entryTagFieldController
+func NewVaultUserController() *VaultUserController {
+	vaultUserController := new(VaultUserController)
+	vaultUserController.vaultUserService = new(service.VaultUserService)
+	return vaultUserController
 }
 
-func (entryTagController *EntryTagController) SaveEntryTags(c *gin.Context) {
-	entryTagForm := validator2.SaveEntryTagForm{}
-	if err := c.ShouldBindJSON(&entryTagForm); err != nil {
+func (vaultUserController *VaultUserController) SaveVaultUser(c *gin.Context) {
+	vaultUserForm := validator2.SaveVaultUserForm{}
+	if err := c.ShouldBindJSON(&vaultUserForm); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	// Validate the form
 	validate := validator.New()
-	err := validate.Struct(entryTagForm)
+	err := validate.Struct(vaultUserForm)
 
 	// Check if the form is valid
 	if err != nil {
@@ -39,15 +39,15 @@ func (entryTagController *EntryTagController) SaveEntryTags(c *gin.Context) {
 		return
 	}
 
-	// Save the entry tags
-	for _, entryTag := range entryTagForm.EntryTags {
-		currentEntryTag, err := entryTagController.entryTagService.GetEntryTag(entryTag.EntryID, entryTag.TagID)
+	// Save the vault users
+	for _, vaultUser := range vaultUserForm.VaultUsers {
+		currentVaultUser, err := vaultUserController.vaultUserService.GetVaultUser(vaultUser.VaultID, vaultUser.UserID)
 
-		if err == nil && currentEntryTag.UpdatedAt.Unix() < entryTag.UpdatedAt.Unix() {
-			saveError := entryTagController.entryTagService.Save(&entryTag)
+		if err == nil && currentVaultUser.UpdatedAt.Unix() < vaultUser.UpdatedAt.Unix() {
+			saveError := vaultUserController.vaultUserService.Save(&vaultUser)
 
 			if saveError != nil {
-				_ = fmt.Sprintf("EntryTagController->SaveEntryTags: %s", saveError.Error())
+				_ = fmt.Sprintf("VaultUserController->SaveVaultUser: %s", saveError.Error())
 			}
 		}
 	}
@@ -55,8 +55,8 @@ func (entryTagController *EntryTagController) SaveEntryTags(c *gin.Context) {
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
-func (entryTagController *EntryTagController) GetEntryTags(c *gin.Context) {
-	var entryTags []model.EntryTag
+func (vaultUserController *VaultUserController) GetVaultUsers(c *gin.Context) {
+	var vaultUsers []model.VaultUser
 	layout := "2006-01-02T15:04:05Z"
 	lastSynchroString := c.Query("LastSynchro")
 
@@ -71,7 +71,7 @@ func (entryTagController *EntryTagController) GetEntryTags(c *gin.Context) {
 	}
 
 	if lastSynchroString != "" && lastSynchroString != "null" {
-		// Retrieve the entry tags that changed
+		// Retrieve the vault users that changed
 		lastSynchro, err := time.Parse(layout, lastSynchroString)
 
 		if err != nil {
@@ -79,14 +79,14 @@ func (entryTagController *EntryTagController) GetEntryTags(c *gin.Context) {
 			return
 		}
 
-		entryTags, err = entryTagController.entryTagService.GetEntryTagsToSynchronize(user.ID, lastSynchro)
+		vaultUsers, err = vaultUserController.vaultUserService.GetVaultUsersToSynchronize(user.ID, lastSynchro)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	} else {
-		// Retrieve all the entry tags
-		entryTags, err = entryTagController.entryTagService.GetEntryTagsFromVault(user.ID)
+		// Retrieve all the vault users
+		vaultUsers, err = vaultUserController.vaultUserService.GetVaultUsers(user.ID)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -94,6 +94,6 @@ func (entryTagController *EntryTagController) GetEntryTags(c *gin.Context) {
 	}
 
 	c.JSONP(http.StatusOK, gin.H{
-		"entry_tags": entryTags,
+		"vault_users": vaultUsers,
 	})
 }

@@ -31,7 +31,8 @@ func (t *TagService) GetTagsToSynchronize(userId uuid.UUID, lastSync time.Time) 
 	var tags []model.Tag
 	err := config.DB.
 		Joins("left join vaults on vaults.id = tags.vault_id").
-		Where("vaults.user_id = ? AND tags.updated_at > ?", userId, lastSync).
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND tags.updated_at > ?", userId, userId, lastSync).
 		Find(&tags).Error
 
 	return tags, err
@@ -42,7 +43,8 @@ func (t *TagService) GetTagsFromVault(userId uuid.UUID) ([]model.Tag, error) {
 	var tags []model.Tag
 	err := config.DB.
 		Joins("left join vaults on vaults.id = tags.vault_id").
-		Where("vaults.user_id = ?", userId).
+		Joins("left join vault_users on vault_users.vault_id = vaults.id").
+		Where("vaults.user_id = ? or vault_users.user_id = ?", userId, userId).
 		Find(&tags).Error
 
 	return tags, err

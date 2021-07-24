@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"applichic.com/chic_secret/model"
 	"applichic.com/chic_secret/service"
 	"applichic.com/chic_secret/util"
 	validator2 "applichic.com/chic_secret/validator"
@@ -8,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"time"
 )
 
 type UserController struct {
@@ -22,14 +24,25 @@ func NewUserController() *UserController {
 
 // FetchUser Fetch user's data
 func (u *UserController) FetchUser(c *gin.Context) {
-	user, err := util.GetUserFromToken(c)
+	getUserForm := validator2.GetUserForm{}
+	if err := c.ShouldBindJSON(&getUserForm); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	// Check if the user exists
+	// Validate the form
+	validate := validator.New()
+	err := validate.Struct(getUserForm)
+
+	// Check if the form is valid
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-			"code":  codeErrorServer,
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := u.userService.FetchUserByEmail(getUserForm.Email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -58,9 +71,9 @@ func (u *UserController) SaveUser(c *gin.Context) {
 	}
 
 	// Save the saveUserForm
-	currentCategory, err := u.userService.FetchUserById(saveUserForm.User.ID)
+	currentUser, err := u.userService.FetchUserById(saveUserForm.User.ID)
 
-	if err == nil && currentCategory.UpdatedAt.Unix() < saveUserForm.User.UpdatedAt.Unix() {
+	if err == nil && currentUser.UpdatedAt.Unix() < saveUserForm.User.UpdatedAt.Unix() {
 		saveError := u.userService.Save(&saveUserForm.User)
 
 		if saveError != nil {
@@ -69,4 +82,47 @@ func (u *UserController) SaveUser(c *gin.Context) {
 	}
 
 	c.JSONP(http.StatusOK, gin.H{})
+}
+
+func (u *UserController) GetUsers(c *gin.Context) {
+	var users []model.User
+	layout := "2006-01-02T15:04:05Z"
+	lastSynchroString := c.Query("LastSynchro")
+
+	// Check if the user exists
+	user, err := util.GetUserFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
+		return
+	}
+
+	if lastSynchroString != "" && lastSynchroString != "null" {
+		// Retrieve the vaults that changed
+		lastSynchro, err := time.Parse(layout, lastSynchroString)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		users, err = u.userService.GetUsersToSynchronize(user.ID, lastSynchro)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		// Retrieve all the users
+		users, err = u.userService.GetUsersLinkedToUser(user.ID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	c.JSONP(http.StatusOK, gin.H{
+		"users": users,
+	})
 }

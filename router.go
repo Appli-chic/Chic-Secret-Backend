@@ -19,6 +19,7 @@ func InitRouter() *gin.Engine {
 	customFieldController := controller.NewCustomFieldController()
 	tagController := controller.NewTagController()
 	entryTagController := controller.NewEntryTagController()
+	vaultUserController := controller.NewVaultUserController()
 
 	api := router.Group("/api")
 	{
@@ -34,6 +35,7 @@ func InitRouter() *gin.Engine {
 			// User
 			loggedInGroup.POST("/user", userController.SaveUser)
 			loggedInGroup.GET("/user", userController.FetchUser)
+			loggedInGroup.GET("/users", userController.GetUsers)
 
 			// Vaults
 			loggedInGroup.POST("/vaults", vaultController.SaveVaults)
@@ -55,9 +57,13 @@ func InitRouter() *gin.Engine {
 			loggedInGroup.POST("/tags", tagController.SaveTags)
 			loggedInGroup.GET("/tags", tagController.GetTags)
 
-			// Entry tags
+			// Entry Tags
 			loggedInGroup.POST("/entry-tags", entryTagController.SaveEntryTags)
 			loggedInGroup.GET("/entry-tags", entryTagController.GetEntryTags)
+
+			// Vault Users
+			loggedInGroup.POST("/vault-users", vaultUserController.SaveVaultUser)
+			loggedInGroup.GET("/vault-users", vaultUserController.GetVaultUsers)
 		}
 	}
 

@@ -13,6 +13,7 @@ type User struct {
 	Tokens                []Token      `gorm:"foreignKey:UserID"`
 	LoginTokens           []LoginToken `gorm:"foreignKey:UserID"`
 	Vaults                []Vault      `gorm:"foreignKey:UserID"`
+	VaultUsers            []VaultUser  `gorm:"foreignKey:UserID"`
 	IsSubscribed          bool
 	Subscription          string `gorm:"type:varchar(255)"`
 	SubscriptionStartDate time.Time
