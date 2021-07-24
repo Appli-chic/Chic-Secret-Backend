@@ -24,6 +24,25 @@ func NewUserController() *UserController {
 
 // FetchUser Fetch user's data
 func (u *UserController) FetchUser(c *gin.Context) {
+	user, err := util.GetUserFromToken(c)
+
+	// Check if the user exists
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
+		return
+	}
+
+	// Send the user information
+	c.JSON(http.StatusOK, gin.H{
+		"user": user,
+	})
+}
+
+// FetchUserByEmail Fetch user by email
+func (u *UserController) FetchUserByEmail(c *gin.Context) {
 	getUserForm := validator2.GetUserForm{}
 	if err := c.ShouldBindJSON(&getUserForm); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
