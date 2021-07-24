@@ -43,23 +43,9 @@ func (u *UserController) FetchUser(c *gin.Context) {
 
 // FetchUserByEmail Fetch user by email
 func (u *UserController) FetchUserByEmail(c *gin.Context) {
-	getUserForm := validator2.GetUserForm{}
-	if err := c.ShouldBindJSON(&getUserForm); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	email := c.Param("email")
 
-	// Validate the form
-	validate := validator.New()
-	err := validate.Struct(getUserForm)
-
-	// Check if the form is valid
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	user, err := u.userService.FetchUserByEmail(getUserForm.Email)
+	user, err := u.userService.FetchUserByEmail(email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
