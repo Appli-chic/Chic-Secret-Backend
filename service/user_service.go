@@ -46,7 +46,7 @@ func (u *UserService) GetUsersToSynchronize(userId uuid.UUID, lastSync time.Time
 	err := config.DB.
 		Joins("left join vault_users on vault_users.user_id = users.id").
 		Joins("left join vaults on vault_users.vault_id = vaults.id").
-		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND updated_at > ?", userId, userId, lastSync).
+		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND users.updated_at > ?", userId, userId, lastSync).
 		Find(&users).Error
 	return users, err
 }

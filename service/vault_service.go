@@ -31,7 +31,7 @@ func (v *VaultService) GetVaultsToSynchronize(userId uuid.UUID, lastSync time.Ti
 	var vaults []model.Vault
 	err := config.DB.
 		Joins("left join vault_users on vault_users.vault_id = vaults.id").
-		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND updated_at > ?", userId, userId, lastSync).Find(&vaults).Error
+		Where("(vaults.user_id = ? or vault_users.user_id = ?) AND vaults.updated_at > ?", userId, userId, lastSync).Find(&vaults).Error
 	return vaults, err
 }
 
