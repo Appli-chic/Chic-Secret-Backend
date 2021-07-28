@@ -23,6 +23,7 @@ type Config struct {
 
 var Conf Config
 
+// LoadConfiguration Load the configuration for the database, security and Email
 func LoadConfiguration() {
 	err := godotenv.Load()
 	if err != nil {

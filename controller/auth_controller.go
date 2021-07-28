@@ -55,7 +55,7 @@ func createAccessToken(user model.User) (string, error) {
 	return unSignedToken.SignedString([]byte(config.Conf.JwtSecret))
 }
 
-// Ask to send a code to the email to login
+// AskCodeToLogin Ask to send a code to the email to login
 func (a *AuthController) AskCodeToLogin(c *gin.Context) {
 	askCodeForm := validator2.AskCodeForm{}
 	if err := c.ShouldBindJSON(&askCodeForm); err != nil {
@@ -151,7 +151,10 @@ func (a *AuthController) Login(c *gin.Context) {
 	}
 
 	// Delete all the login tokens
-	a.loginTokenService.DeleteAllForUser(user.ID)
+	err = a.loginTokenService.DeleteAllForUser(user.ID)
+	if err != nil {
+		print(err)
+	}
 
 	// Create the tokens
 	accessToken, err := createAccessToken(user)
@@ -198,7 +201,7 @@ func (a *AuthController) Login(c *gin.Context) {
 	})
 }
 
-// Refresh the access token thanks to a refresh token
+// RefreshAccessToken Refresh the access token thanks to a refresh token
 func (a *AuthController) RefreshAccessToken(c *gin.Context) {
 	// Retrieve the body
 	refreshingTokenForm := validator2.RefreshingTokenForm{}

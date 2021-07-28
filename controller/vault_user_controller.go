@@ -22,6 +22,7 @@ func NewVaultUserController() *VaultUserController {
 	return vaultUserController
 }
 
+// SaveVaultUser Save the vault users to synchronize in the database
 func (vaultUserController *VaultUserController) SaveVaultUser(c *gin.Context) {
 	vaultUserForm := validator2.SaveVaultUserForm{}
 	if err := c.ShouldBindJSON(&vaultUserForm); err != nil {
@@ -55,6 +56,7 @@ func (vaultUserController *VaultUserController) SaveVaultUser(c *gin.Context) {
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
+// GetVaultUsers Retrieve the vault users to synchronize with the user's device
 func (vaultUserController *VaultUserController) GetVaultUsers(c *gin.Context) {
 	var vaultUsers []model.VaultUser
 	layout := "2006-01-02T15:04:05Z"

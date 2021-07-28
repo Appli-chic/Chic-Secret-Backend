@@ -22,6 +22,7 @@ func NewCategoryController() *CategoryController {
 	return categoryController
 }
 
+// SaveCategories Save the categories to synchronize in the database
 func (categoryController *CategoryController) SaveCategories(c *gin.Context) {
 	categoriesForm := validator2.SaveCategoriesForm{}
 	if err := c.ShouldBindJSON(&categoriesForm); err != nil {
@@ -55,6 +56,7 @@ func (categoryController *CategoryController) SaveCategories(c *gin.Context) {
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
+// GetCategories Retrieve the categories to synchronize with the user's device
 func (categoryController *CategoryController) GetCategories(c *gin.Context) {
 	var categories []model.Category
 	layout := "2006-01-02T15:04:05Z"

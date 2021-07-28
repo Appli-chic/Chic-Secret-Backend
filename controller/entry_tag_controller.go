@@ -22,6 +22,7 @@ func NewEntryTagController() *EntryTagController {
 	return entryTagFieldController
 }
 
+// SaveEntryTags Save the entry tags to synchronize in the database
 func (entryTagController *EntryTagController) SaveEntryTags(c *gin.Context) {
 	entryTagForm := validator2.SaveEntryTagForm{}
 	if err := c.ShouldBindJSON(&entryTagForm); err != nil {
@@ -55,6 +56,7 @@ func (entryTagController *EntryTagController) SaveEntryTags(c *gin.Context) {
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
+// GetEntryTags Retrieve the entry tags to synchronize with the user's device
 func (entryTagController *EntryTagController) GetEntryTags(c *gin.Context) {
 	var entryTags []model.EntryTag
 	layout := "2006-01-02T15:04:05Z"

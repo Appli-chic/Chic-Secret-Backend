@@ -22,6 +22,7 @@ func NewEntryController() *EntryController {
 	return entryController
 }
 
+// SaveEntries Save the entries to synchronize in the database
 func (e *EntryController) SaveEntries(c *gin.Context) {
 	entriesForm := validator2.SaveEntriesForm{}
 	if err := c.ShouldBindJSON(&entriesForm); err != nil {
@@ -55,6 +56,7 @@ func (e *EntryController) SaveEntries(c *gin.Context) {
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
+// GetEntries Retrieve the entries to synchronize with the user's device
 func (e *EntryController) GetEntries(c *gin.Context) {
 	var entries []model.Entry
 	layout := "2006-01-02T15:04:05Z"

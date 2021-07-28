@@ -6,6 +6,7 @@ import (
 	"net/smtp"
 )
 
+// SendEmail Send an email from Chic Secret to the user
 func SendEmail(email string, body string, subject string) {
 	auth := smtp.PlainAuth("Chic Secret", config.Conf.Email, config.Conf.EmailPassword, "ssl0.ovh.net")
 	msg := []byte("To: " + email + "\r\n" +

@@ -10,6 +10,7 @@ import (
 
 var DB *gorm.DB
 
+// InitDB Initialize the database and start automatically the migrations
 func InitDB() (*sql.DB, error) {
 	//return nil, err
 	dbArgs := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",

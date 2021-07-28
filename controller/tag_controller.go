@@ -22,6 +22,7 @@ func NewTagController() *TagController {
 	return customFieldController
 }
 
+// SaveTags Save the tags to synchronize in the database
 func (tagController *TagController) SaveTags(c *gin.Context) {
 	tagForm := validator2.SaveTagForm{}
 	if err := c.ShouldBindJSON(&tagForm); err != nil {
@@ -55,6 +56,7 @@ func (tagController *TagController) SaveTags(c *gin.Context) {
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
+// GetTags Retrieve the tags to synchronize with the user's device
 func (tagController *TagController) GetTags(c *gin.Context) {
 	var tags []model.Tag
 	layout := "2006-01-02T15:04:05Z"

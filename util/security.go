@@ -13,6 +13,7 @@ import (
 	"time"
 )
 
+// GenerateLoginToken Generate a login token
 func GenerateLoginToken() int {
 	rand.Seed(time.Now().UnixNano())
 	min := 100000
@@ -20,6 +21,7 @@ func GenerateLoginToken() int {
 	return rand.Intn(max-min) + min
 }
 
+// GetUserFromToken Retrieve the user from the JWT token
 func GetUserFromToken(c *gin.Context) (*model.User, error) {
 	token, err := GetToken(c)
 
@@ -34,7 +36,7 @@ func GetUserFromToken(c *gin.Context) (*model.User, error) {
 	return &user, err
 }
 
-// Get token from the Authorization header
+// GetToken Get token from the Authorization header
 func GetToken(c *gin.Context) (*jwt.Token, error) {
 	reqToken := c.Request.Header.Get("Authorization")
 	splitToken := strings.Split(reqToken, "Bearer")
@@ -63,7 +65,7 @@ func GetToken(c *gin.Context) (*jwt.Token, error) {
 	return token, nil
 }
 
-// Retrieve the token to check if the service is authenticated
+// AuthenticationRequired Retrieve the token to check if the service is authenticated
 func AuthenticationRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Check token

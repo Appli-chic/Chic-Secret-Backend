@@ -22,6 +22,7 @@ func NewCustomFieldController() *CustomFieldController {
 	return customFieldController
 }
 
+// SaveCustomFields Save the custom fields to synchronize in the database
 func (customFieldController *CustomFieldController) SaveCustomFields(c *gin.Context) {
 	customFieldForm := validator2.SaveCustomFieldForm{}
 	if err := c.ShouldBindJSON(&customFieldForm); err != nil {
@@ -55,6 +56,7 @@ func (customFieldController *CustomFieldController) SaveCustomFields(c *gin.Cont
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
+// GetCustomFields Retrieve the custom fields to synchronize with the user's device
 func (customFieldController *CustomFieldController) GetCustomFields(c *gin.Context) {
 	var customFields []model.CustomField
 	layout := "2006-01-02T15:04:05Z"

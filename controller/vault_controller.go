@@ -22,6 +22,7 @@ func NewVaultController() *VaultController {
 	return vaultController
 }
 
+// SaveVaults Save the vaults to synchronize in the database
 func (v *VaultController) SaveVaults(c *gin.Context) {
 	saveVaultsForm := validator2.SaveVaultsForm{}
 	if err := c.ShouldBindJSON(&saveVaultsForm); err != nil {
@@ -55,6 +56,7 @@ func (v *VaultController) SaveVaults(c *gin.Context) {
 	c.JSONP(http.StatusOK, gin.H{})
 }
 
+// GetVaults Retrieve the vaults to synchronize with the user's device
 func (v *VaultController) GetVaults(c *gin.Context) {
 	var vaults []model.Vault
 	layout := "2006-01-02T15:04:05Z"
