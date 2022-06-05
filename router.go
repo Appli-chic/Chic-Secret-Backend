@@ -37,6 +37,7 @@ func InitRouter() *gin.Engine {
 			loggedInGroup.GET("/user", userController.FetchUser)
 			loggedInGroup.GET("/user/:email", userController.FetchUserByEmail)
 			loggedInGroup.GET("/users", userController.GetUsers)
+			loggedInGroup.GET("/user/delete", userController.Delete)
 
 			// Vaults
 			loggedInGroup.POST("/vaults", vaultController.SaveVaults)

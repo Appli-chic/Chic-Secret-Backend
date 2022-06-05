@@ -51,3 +51,11 @@ func (e *EntryTagService) GetEntryTagsFromVault(userId uuid.UUID) ([]model.Entry
 
 	return entryTags, err
 }
+
+func (e *EntryTagService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from entry_tags "+
+		"using tags, vaults "+
+		"where tags.id = entry_tags.tag_id "+
+		"and vaults.id = tags.vault_id "+
+		"and vaults.user_id = ?", userId)
+}

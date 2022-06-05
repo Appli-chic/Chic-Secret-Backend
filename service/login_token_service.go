@@ -28,3 +28,8 @@ func (l *LoginTokenService) FetchTokenNotExpiredByUserId(userId uuid.UUID, code 
 	err := config.DB.Where("user_id = ? AND token = ? AND expire_at >= ?", userId, code, time.Now()).First(&loginToken).Error
 	return loginToken, err
 }
+
+func (l *LoginTokenService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from login_tokens "+
+		"where login_tokens.user_id = ?", userId)
+}

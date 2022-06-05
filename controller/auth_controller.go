@@ -106,7 +106,7 @@ func (a *AuthController) AskCodeToLogin(c *gin.Context) {
 	}
 
 	// Send an email to the user with the code
-	go util.SendEmail(askCodeForm.Email, "Code: "+verificationCodeString, "Chic Secret: Login to our services")
+	go util.SendEmail(askCodeForm.Email, verificationCodeString, "Chic Secret: Login to our services")
 	c.JSONP(http.StatusOK, gin.H{})
 }
 

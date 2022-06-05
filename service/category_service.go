@@ -49,3 +49,10 @@ func (c *CategoryService) GetCategoriesFromVault(userId uuid.UUID) ([]model.Cate
 
 	return categories, err
 }
+
+func (c *CategoryService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from categories "+
+		"using vaults "+
+		"where vaults.id = categories.vault_id "+
+		"and vaults.user_id = ?", userId)
+}

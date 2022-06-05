@@ -49,3 +49,10 @@ func (e *EntryService) GetEntriesFromVault(userId uuid.UUID) ([]model.Entry, err
 
 	return entries, err
 }
+
+func (e *EntryService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from entries "+
+		"using vaults "+
+		"where vaults.id = entries.vault_id "+
+		"and vaults.user_id = ?", userId)
+}

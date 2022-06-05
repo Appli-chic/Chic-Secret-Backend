@@ -50,3 +50,10 @@ func (v *VaultUserService) GetVaultUsers(userId uuid.UUID) ([]model.VaultUser, e
 
 	return vaultUsers, err
 }
+
+func (v *VaultUserService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from vault_users "+
+		"using vaults "+
+		"where vaults.id = vault_users.vault_id "+
+		"and vaults.user_id = ?", userId)
+}

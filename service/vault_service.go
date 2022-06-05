@@ -43,3 +43,8 @@ func (v *VaultService) GetUserVaults(userId uuid.UUID) ([]model.Vault, error) {
 		Where("vaults.user_id = ? or vault_users.user_id = ?", userId, userId).Find(&vaults).Error
 	return vaults, err
 }
+
+func (v *VaultService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from vaults "+
+		"where vaults.user_id = ?", userId)
+}

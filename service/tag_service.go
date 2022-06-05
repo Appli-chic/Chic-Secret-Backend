@@ -49,3 +49,10 @@ func (t *TagService) GetTagsFromVault(userId uuid.UUID) ([]model.Tag, error) {
 
 	return tags, err
 }
+
+func (t *TagService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from tags "+
+		"using vaults "+
+		"where vaults.id = tags.vault_id "+
+		"and vaults.user_id = ?", userId)
+}

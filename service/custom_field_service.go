@@ -51,3 +51,11 @@ func (c *CustomFieldService) GetCustomFieldsFromVault(userId uuid.UUID) ([]model
 
 	return customFields, err
 }
+
+func (c *CustomFieldService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from custom_fields "+
+		"using entries, vaults "+
+		"where entries.id = custom_fields.entry_id "+
+		"and vaults.id = entries.vault_id "+
+		"and vaults.user_id = ?", userId)
+}

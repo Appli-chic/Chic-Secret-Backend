@@ -61,3 +61,8 @@ func (u *UserService) GetUsersLinkedToUser(userId uuid.UUID) ([]model.User, erro
 		Find(&users).Error
 	return users, err
 }
+
+func (u *UserService) DeleteFromUser(userId uuid.UUID) {
+	config.DB.Exec("delete from users "+
+		"where id = ?", userId)
+}

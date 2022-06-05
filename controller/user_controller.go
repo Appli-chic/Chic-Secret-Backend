@@ -13,12 +13,29 @@ import (
 )
 
 type UserController struct {
-	userService *service.UserService
+	userService        *service.UserService
+	tagService         *service.TagService
+	entryTagService    *service.EntryTagService
+	customFieldService *service.CustomFieldService
+	entryService       *service.EntryService
+	categoryService    *service.CategoryService
+	vaultUserService   *service.VaultUserService
+	vaultService       *service.VaultService
+	tokenService       *service.TokenService
+	loginTokenService  *service.LoginTokenService
 }
 
 func NewUserController() *UserController {
 	userController := new(UserController)
 	userController.userService = new(service.UserService)
+	userController.tagService = new(service.TagService)
+	userController.customFieldService = new(service.CustomFieldService)
+	userController.entryService = new(service.EntryService)
+	userController.categoryService = new(service.CategoryService)
+	userController.vaultUserService = new(service.VaultUserService)
+	userController.vaultService = new(service.VaultService)
+	userController.tokenService = new(service.TokenService)
+	userController.loginTokenService = new(service.LoginTokenService)
 	return userController
 }
 
@@ -130,4 +147,29 @@ func (u *UserController) GetUsers(c *gin.Context) {
 	c.JSONP(http.StatusOK, gin.H{
 		"users": users,
 	})
+}
+
+func (u *UserController) Delete(c *gin.Context) {
+	// Check if the user exists
+	user, err := util.GetUserFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+			"code":  codeErrorServer,
+		})
+		return
+	}
+
+	u.entryTagService.DeleteFromUser(user.ID)
+	u.tagService.DeleteFromUser(user.ID)
+	u.customFieldService.DeleteFromUser(user.ID)
+	u.entryService.DeleteFromUser(user.ID)
+	u.categoryService.DeleteFromUser(user.ID)
+	u.vaultUserService.DeleteFromUser(user.ID)
+	u.vaultService.DeleteFromUser(user.ID)
+	u.tokenService.DeleteFromUser(user.ID)
+	u.loginTokenService.DeleteFromUser(user.ID)
+	u.userService.DeleteFromUser(user.ID)
+
+	c.JSONP(http.StatusOK, gin.H{})
 }
