@@ -6,9 +6,9 @@ import (
 	"applichic.com/chic_secret/service"
 	"applichic.com/chic_secret/util"
 	validator2 "applichic.com/chic_secret/validator"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v5"
 	guuid "github.com/google/uuid"
 	"net/http"
 	"strconv"
@@ -21,7 +21,7 @@ const codeErrorEmailOrPasswordIncorrect = "CODE_ERROR_EMAIL_OR_PASSWORD_INCORREC
 
 type UserClaim struct {
 	User model.User
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 type AuthController struct {
@@ -44,9 +44,9 @@ func createAccessToken(user model.User) (string, error) {
 	newUser.ID = user.ID
 	expiresAt := time.Now().Add(time.Duration(config.Conf.JwtTokenExpiration) * time.Minute)
 	claims := UserClaim{
-		newUser,
-		jwt.StandardClaims{
-			ExpiresAt: expiresAt.Unix(),
+		User: newUser,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expiresAt),
 		},
 	}
 
